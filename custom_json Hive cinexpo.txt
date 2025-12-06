@@ -1,0 +1,6 @@
+{
+  "required_auths": [],
+  "required_posting_auths": ["cinexpo"], 
+  "id": "CINEXPO2026", 
+  "json": "contenido_json_en_texto"
+}
