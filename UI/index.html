@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <title>CINEXPO — Compra de Entradas</title>
+
+    <!-- Tailwind CSS vía CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: "Inter", sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-white min-h-screen overflow-x-hidden">
+
+    <!-- HEADER TIPO APP (FIJO ARRIBA) -->
+    <header class="w-full fixed top-0 left-0 bg-gray-900 border-b border-gray-700 z-50 px-4 py-3 text-center shadow-lg">
+        <h1 class="text-2xl font-bold">🎬 CINEXPO</h1>
+    </header>
+
+    <!-- CONTENIDO SCROLLABLE ABAJO DEL HEADER -->
+    <div class="pt-20 px-4 pb-10 max-w-md mx-auto">
+
+        <!-- IMAGEN PRINCIPAL OPTIMIZADA PARA MÓVIL -->
+        <div class="rounded-xl overflow-hidden shadow-lg mb-8">
+            <img src="https://images.unsplash.com/photo-1524985069026-dd778a71c7b4" 
+                 alt="Imagen de cine"
+                 class="w-full h-56 sm:h-64 object-cover">
+        </div>
+
+        <!-- TEXTO SECUNDARIO -->
+        <p class="text-gray-400 text-center mb-6 text-sm">
+            Compra tus entradas de forma rápida y segura
+        </p>
+
+        <!-- BOTONES PRINCIPALES -->
+        <div class="flex flex-col gap-3">
+
+            <!-- BOTÓN ACCOUNT (ROJO) -->
+            <!-- 
+                ESTE BOTÓN ABRIRÁ EL PERFIL DEL USUARIO.
+                ID = "btn-account"
+            -->
+            <button id="btn-account"
+                class="w-full bg-red-600 hover:bg-red-500 active:scale-95 py-3.5 rounded-xl text-lg font-semibold transition">
+                Account
+            </button>
+
+            <!-- BOTÓN PAY (AZUL) -> redirige a pay.html -->
+            <!-- 
+                BOTÓN PRINCIPAL PARA IR A LA PÁGINA DE PAGO.
+                NOTA: ahora abrimos una vista dedicada (pay.html) en lugar de desplegar opciones.
+            -->
+            <a href="pay.html" id="btn-pay" class="w-full inline-block text-center bg-blue-600 hover:bg-blue-500 active:scale-95 py-3.5 rounded-xl text-lg font-semibold transition">
+                Pay
+            </a>
+
+        </div>
+    </div>
+
+    <!-- SCRIPT: stubs para Account (el equipo puede conectar con backend) -->
+    <script>
+        // IDs importantes:
+        // - btn-account: abrir perfil/login (handler en JS o llamada a backend Python)
+        // - btn-pay (en este caso es <a href="pay.html">; si necesitan un handler JS, pueden mapearlo por ID)
+
+        const btnAccount = document.getElementById('btn-account');
+
+        btnAccount?.addEventListener('click', () => {
+            // TODO: Integrar lógica de abrir modal de login/perfil o redirigir a /account
+            console.log('Account clicked - aquí iría la lógica de perfil/login.');
+            // Ejemplo: window.location.href = '/account';
+        });
+    </script>
+
+</body>
+</html>
