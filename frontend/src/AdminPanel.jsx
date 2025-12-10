@@ -16,27 +16,31 @@ function AdminPanel() {
     setShowScanner(true)
   }
 
-  const handleScanSuccess = (scannedText) => {
+  const handleScanSuccess = async (scannedText) => {
+    // Cerrar el escáner primero
+    setShowScanner(false)
+    
     // El QR puede contener JSON con el ticket_id o solo el ticket_id
+    let extractedTicketId = scannedText
+    
     try {
       const parsed = JSON.parse(scannedText)
       if (parsed.ticket_id) {
-        setTicketId(parsed.ticket_id)
-        checkTicket(parsed.ticket_id)
-      } else {
-        setTicketId(scannedText)
-        checkTicket(scannedText)
+        extractedTicketId = parsed.ticket_id
       }
     } catch {
-      // Si no es JSON, asumimos que es el ticket_id directamente
-      setTicketId(scannedText)
-      checkTicket(scannedText)
+      // Si no es JSON, usar el texto directamente
     }
-    setShowScanner(false)
+    
+    setTicketId(extractedTicketId)
+    
+    // Consultar el ticket automáticamente
+    await checkTicket(extractedTicketId)
   }
 
   const handleCloseScanner = () => {
     setShowScanner(false)
+    // No hacer nada más, solo cerrar el escáner
   }
 
   const checkTicket = async (id) => {
@@ -74,11 +78,19 @@ function AdminPanel() {
     setLoading(true)
     setError('')
     setMessage('')
+    setTicketInfo(null)
 
     try {
       const result = await validateTicket(ticketId, adminUsername.trim())
-      setMessage(result.message || 'Ticket validado exitosamente')
+      setMessage(result.message || '✅ Ticket validado y quemado exitosamente')
       setTicketInfo(result.ticket)
+      
+      // Limpiar el formulario después de validar exitosamente
+      setTimeout(() => {
+        setTicketId('')
+        setTicketInfo(null)
+        setMessage('')
+      }, 3000) // Limpiar después de 3 segundos
     } catch (err) {
       setError(err.message)
     } finally {
@@ -89,7 +101,11 @@ function AdminPanel() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-6 bg-slate-950 px-6 py-12 text-slate-50">
       {showScanner && (
-        <QRScanner onScanSuccess={handleScanSuccess} onClose={handleCloseScanner} />
+        <QRScanner 
+          onScanSuccess={handleScanSuccess} 
+          onClose={handleCloseScanner}
+          showScanner={showScanner}
+        />
       )}
 
       <div className="w-full max-w-2xl">
@@ -157,7 +173,13 @@ function AdminPanel() {
 
         {message && (
           <div className="mb-4 rounded-md bg-green-900/50 border border-green-500 p-4 text-green-200">
-            {message}
+            <div className="flex items-center gap-2">
+              <span className="text-2xl">✅</span>
+              <div>
+                <p className="font-semibold">{message}</p>
+                <p className="text-sm text-green-300 mt-1">El ticket ha sido validado y quemado exitosamente</p>
+              </div>
+            </div>
           </div>
         )}
 

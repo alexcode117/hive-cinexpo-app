@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Html5Qrcode } from 'html5-qrcode'
 
-function QRScanner({ onScanSuccess, onClose }) {
+function QRScanner({ onScanSuccess, onClose, showScanner }) {
   const html5QrCodeRef = useRef(null)
   const [error, setError] = useState('')
   const [isScanning, setIsScanning] = useState(false)
@@ -24,6 +24,10 @@ function QRScanner({ onScanSuccess, onClose }) {
   }
 
   useEffect(() => {
+    if (!showScanner) {
+      return
+    }
+
     let isMounted = true
 
     const startScanning = async () => {
@@ -68,17 +72,21 @@ function QRScanner({ onScanSuccess, onClose }) {
 
     startScanning()
 
-    // Limpiar al desmontar
+    // Limpiar al desmontar o cuando showScanner cambie
     return () => {
       isMounted = false
       stopScanning()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [showScanner])
 
   const handleClose = () => {
     stopScanning()
     onClose()
+  }
+
+  if (!showScanner) {
+    return null
   }
 
   return (
@@ -86,7 +94,8 @@ function QRScanner({ onScanSuccess, onClose }) {
       <div className="relative w-full max-w-md rounded-lg bg-slate-900 p-6">
         <button
           onClick={handleClose}
-          className="absolute right-4 top-4 text-2xl text-slate-400 hover:text-slate-200"
+          className="absolute right-4 top-4 z-10 rounded-full bg-slate-800 p-2 text-2xl text-slate-400 hover:bg-slate-700 hover:text-slate-200 transition-all"
+          aria-label="Cerrar escáner"
         >
           ×
         </button>
@@ -96,24 +105,25 @@ function QRScanner({ onScanSuccess, onClose }) {
         {error && (
           <div className="mb-4 rounded-md bg-red-900/50 border border-red-500 p-3 text-sm text-red-200">
             {error}
+            <p className="mt-2 text-xs">Asegúrate de permitir el acceso a la cámara</p>
           </div>
         )}
 
         <div
           id="qr-reader"
-          className="mb-4 rounded-lg overflow-hidden"
+          className="mb-4 rounded-lg overflow-hidden bg-slate-800"
           style={{ width: '100%', minHeight: '300px' }}
         />
 
-        <p className="text-center text-sm text-slate-400">
+        <p className="text-center text-sm text-slate-400 mb-4">
           Apunta la cámara hacia el código QR del ticket
         </p>
 
         <button
           onClick={handleClose}
-          className="mt-4 w-full rounded-md bg-slate-700 px-4 py-2 font-semibold text-white transition-all hover:bg-slate-600"
+          className="w-full rounded-md bg-slate-700 px-4 py-2 font-semibold text-white transition-all hover:bg-slate-600"
         >
-          Cerrar
+          Cancelar Escaneo
         </button>
       </div>
     </div>
